@@ -1,0 +1,88 @@
+
+.container{
+width:100% ;
+  /* height: 523px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* justify-items: center; */
+  
+}
+
+
+.card {
+  
+
+  
+  width: 420px;
+  height: 500px;
+  margin-top: 60px;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E4;
+  border-radius: 40px;
+  /* margin:60px auto; */
+  padding: 20px 10px;
+}
+
+form {
+    /* width: 100%; */
+    /* margin: 10px 20px; */
+}
+.icon {
+   display: block;
+   /* width: 100%; */
+   margin: 5px auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1a1a1a;
+}
+
+.inputGroup {
+  margin-bottom: 1rem;
+}
+
+/* .inputGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+} */
+
+.input {
+  width: 100%;
+  padding: 15px;
+  /* border: 1px solid #ccc; */
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  background-color: #F2F2F2;
+}
+
+.button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.link a {
+  color: #007bff;
+  text-decoration: none;
+}
