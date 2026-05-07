@@ -16,7 +16,7 @@ width:100% ;
 
   
   width: 420px;
-  height: 500px;
+  height: 600px;
   margin-top: 60px;
   background-color: #FFFFFF;
   border: 1px solid #E4E4E4;
@@ -54,6 +54,7 @@ form {
   border-radius: 15px;
   font-size: 1rem;
   background-color: #F2F2F2;
+  margin-bottom: 10px;
   
 }
 .input::placeholder{
