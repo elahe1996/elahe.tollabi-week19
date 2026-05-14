@@ -6,6 +6,8 @@ import api from "../services/api";
 import styles from "./ProductsList.module.css";
 import AddProductModal from "../components/AddProductModal";
 import Header from "../components/Header";
+import DeleteModal from "../components/DeleteModal";
+import EditProductModal from "../components/EditProductModal";
 
 function ProductsList() {
   const [products, setProducts] = useState([]);
@@ -15,6 +17,10 @@ function ProductsList() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,27 +29,28 @@ function ProductsList() {
     if (!token) navigate("/login");
   }, [navigate]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("/products", {
-          params: {
-            page,
-            limit: 5,
-            name: searchTerm || undefined,
-          },
-        });
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/products", {
+        params: {
+          page,
+          limit: 5,
+          name: searchTerm || undefined,
+        },
+      });
 
-        setProducts(response.data.data || []);
-        setTotalPages(response.data.totalPages || 1);
-      } catch (err) {
-        console.error(err);
-        setError("خطا در دریافت محصولات");
-      } finally {
-        setLoading(false);
-      }
-    };
+      setProducts(response.data.data || []);
+      setTotalPages(response.data.totalPages || 1);
+    } catch (err) {
+      console.error(err);
+      setError("خطا در دریافت محصولات");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, [page, searchTerm]);
 
@@ -52,30 +59,49 @@ function ProductsList() {
     setPage(1);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("آیا از حذف این محصول مطمئنید؟")) {
-      try {
-        await api.delete(`/products/${id}`);
+  const handleDeleteClick = (product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true);
+  };
 
-        setPage(1);
-        setSearchTerm("");
-      } catch (err) {
-        console.error(err);
-        alert("خطا در حذف محصول");
-      }
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await api.delete(`/products/${productToDelete.id}`);
+
+      setPage(1);
+      setSearchTerm("");
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
+      await fetchProducts();
+    } catch (err) {
+      console.error(err);
+      alert("خطا در حذف محصول");
     }
   };
 
   const handleEdit = (product) => {
-    alert(`ویرایش محصول: ${product.name}`);
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
   };
+
+  const handleProductUpdated = async () => {
+    setPage(1);
+    setSearchTerm("");
+    setSearchTerm("");
+    await fetchProducts();
+  };
+
   const handleAdd = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleProductAdded = () => {
+  const handleProductAdded = async () => {
     setPage(1);
     setSearchTerm("");
+    setSearchTerm("");
+    await fetchProducts();
   };
 
   return (
@@ -98,7 +124,9 @@ function ProductsList() {
 
         <div className={styles.headerRow}>
           <h1 className={styles.title}>مدیریت کالا</h1>
-          <button className={styles.addButton} onClick={handleAdd}></button>
+          <button className={styles.addButton} onClick={handleAdd}>
+            افزودن محصول
+          </button>
         </div>
 
         {error && <div className={styles.error}>{error}</div>}
@@ -133,7 +161,7 @@ function ProductsList() {
                         </button>
                         <button
                           className={styles.deleteBtn}
-                          onClick={() => handleDelete(product.id)}
+                          onClick={() => handleDeleteClick(product)}
                         >
                           <FiTrash2 />
                         </button>
@@ -178,6 +206,18 @@ function ProductsList() {
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
           onProductAdded={handleProductAdded}
+        />
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          productName={productToDelete?.name}
+        />
+        <EditProductModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          product={selectedProduct}
+          onProductUpdated={handleProductUpdated}
         />
       </div>
     </>

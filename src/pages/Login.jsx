@@ -18,8 +18,9 @@ function Login() {
     try {
       const data = await login(username, password);
       localStorage.setItem("token", data.token);
-      alert("ورود موفق!");
-      navigate("/dashboard");
+      localStorage.setItem("username", username);
+      // alert("ورود موفق!");
+      navigate("/products");
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "نام کاربری یا زمز عبور اشتباه است");
